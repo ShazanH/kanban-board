@@ -13,6 +13,15 @@ const KanbanBoard = () => {
   // Define the possible statuses
   const statusTypes = ["Backlog", "Todo", "In progress", "Done", "Cancelled"];
 
+  const priorityLevels = [0, 1, 2, 3, 4];
+  const priorityLabels = {
+    0: "No Priority",
+    1: "Low",
+    2: "Medium",
+    3: "High",
+    4: "Urgent"
+  };
+
   // Mapping group names to image filenames
   const groupToImageMap = {
     "No Priority": "No-priority.svg",
@@ -55,28 +64,25 @@ const KanbanBoard = () => {
 
   const groupTickets = () => {
     if (!Array.isArray(tickets)) {
-      console.error("Tickets is not an array:", tickets); // Add logging if tickets is not an array
+      console.error("Tickets is not an array:", tickets);
       return {};
     }
 
-    // Define priority labels
-    const priorityLabels = {
-      0: "No Priority",
-      1: "Low",
-      2: "Medium",
-      3: "High",
-      4: "Urgent",
-    };
-
-    // Create a group object
     let groups = {};
+
+    // Initialize empty arrays for each priority level when grouping by priority
+    if (groupBy === "priority") {
+      priorityLevels.forEach((level) => {
+        groups[priorityLabels[level]] = [];
+      });
+    }
+
     if (groupBy === "status") {
       statusTypes.forEach((status) => {
         groups[status] = []; // Initialize an empty array for each status
       });
     }
 
-    // Group tickets based on user's selection (status, user, priority)
     return tickets.reduce((groups, ticket) => {
       let key;
 
@@ -93,6 +99,7 @@ const KanbanBoard = () => {
       return groups;
     }, groups);
   };
+
 
   const groupedTickets = groupTickets();
 
